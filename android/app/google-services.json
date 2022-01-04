@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "238779148431",
+    "project_id": "mario-s-grid",
+    "storage_bucket": "mario-s-grid.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:238779148431:android:20850a91ac5318055668fa",
+        "android_client_info": {
+          "package_name": "com.myawesomeproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "238779148431-41toboh72dfhcennfrs4i4vctgd3frqp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCPwVMntfl3MRmsfoPulyx21XAxlsE5nyI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "238779148431-41toboh72dfhcennfrs4i4vctgd3frqp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

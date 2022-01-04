@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import firestore from '@react-native-firebase/firestore';
 
 interface Props {
   position: number,
@@ -15,21 +16,24 @@ interface PropsInput {
 
 const Formulario = () => {
 
-  const [formulario, setFormulario] = useState<Props[]>([{ position: 1, score: 1000, name: 'Oscar' }])
-
   const [state, setState] = useState<PropsInput>({ position: '', score: '', name: '' })
 
   const [alerts, setAlerts] = useState({ name: false, score: false })
 
-  const ordering = (a: Props, b: Props) => {
-    if (a.score > b.score) {
-      return 1;
+  const [data, setData] = useState<any>()
+
+  const loadData = async () => {
+    try {
+      const highscores = await firestore().collection('highscores').orderBy('score', 'desc').get();
+      setData(highscores.docs)
+    } catch (error) {
+      console.log(error)
     }
-    else if (a.score < b.score) {
-      return -1;
-    }
-    return 0;
   }
+
+  useEffect(() => {
+    loadData()
+  }, [])
 
   const onSubmit = () => {
     const name = state.name.trim().length <= 2
@@ -37,18 +41,27 @@ const Formulario = () => {
     const score = parseInt(state.score.trim()) < 0 || state.score.trim().length === 0
 
     if (!name && !score) {
-      setFormulario([...formulario, { position: 2, score: parseInt(state.score), name: state.name }]);
+      firestore()
+        .collection('highscores')
+        .add({
+          name: state.name ,
+          score: parseInt(state.score),
+        })
+        .then(() => {
+          console.log('Score added!');
+        });
+      loadData()
       setState({ position: '', score: '', name: '' })
     }
 
     setAlerts({ name, score })
   }
 
-  const InputComponent = ({item:{name, score}}: any) => {
+  const InputComponent = ({ item }: any) => {
     return (
       <View style={styles.flatListContainerItem}>
-        <Text style={styles.flatListText}>{ name }</Text>
-        <Text style={styles.flatListText}>{ score }</Text>
+        <Text style={styles.flatListText}>{item.data().name}</Text>
+        <Text style={styles.flatListText}>{item.data().score}</Text>
       </View>
     )
   }
@@ -74,13 +87,14 @@ const Formulario = () => {
       </TouchableOpacity>
       <View style={styles.flatListContainer}>
         <FlatList
-          data={formulario.sort(ordering)}
+          data={data}
           bounces={false}
           renderItem={({ item }) => {
             return (
-                <InputComponent item={item} />
+              <InputComponent item={item} />
             )
           }}
+          keyExtractor={item => item.id}
         />
       </View>
     </View>
